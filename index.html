@@ -1,0 +1,876 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1B3744">
+<meta name="description" content="The Botanist in-room menu — Desa Eko, Munduk, Bali">
+<title>The Botanist — In-Room Menu</title>
+<link rel="icon" href="tree-white.png">
+<style>
+@font-face { font-family: "Neue Machina"; font-weight: 300; font-display: swap; src: url("fonts/NeueMachina-Light.otf") format("opentype"); }
+@font-face { font-family: "Neue Machina"; font-weight: 400; font-display: swap; src: url("fonts/NeueMachina-Regular.otf") format("opentype"); }
+@font-face { font-family: "Neue Machina"; font-weight: 500; font-display: swap; src: url("fonts/NeueMachina-Medium.otf") format("opentype"); }
+@font-face { font-family: "Neue Machina"; font-weight: 700; font-display: swap; src: url("fonts/NeueMachina-Bold.otf") format("opentype"); }
+@font-face { font-family: "Sloop Script"; font-weight: 400; font-display: swap; src: url("fonts/SloopScript-Regular.ttf") format("truetype"); }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 400; font-display: swap; src: url("fonts/IBMPlexMono-Regular.ttf") format("truetype"); }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 600; font-display: swap; src: url("fonts/IBMPlexMono-SemiBold.ttf") format("truetype"); }
+
+:root {
+  --gold:       #D4A85B;
+  --gold-dim:   rgba(212,168,91,0.25);
+  --gold-glow:  rgba(212,168,91,0.12);
+  --petrol:     #1B3744;
+  --sage:       #9DAB9A;
+  --charcoal:   #2A2B27;
+  --charcoal-2: #1e1f1b;
+  --black:      #000;
+  --white:      #fff;
+  --paper:      #fafaf7;
+  --line:       rgba(42,43,39,0.10);
+  --line-2:     rgba(42,43,39,0.06);
+  --shadow-sm:  0 1px 8px rgba(0,0,0,0.06);
+  --shadow-md:  0 4px 24px rgba(0,0,0,0.10);
+  --r:          6px;
+  --nav-h:      58px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+*, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html { scroll-behavior: smooth; }
+
+html, body {
+  margin: 0; padding: 0;
+  background: var(--paper);
+  color: var(--charcoal);
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── TOPO BACKDROP ── */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  background: url("topo-light.svg") no-repeat center center / cover;
+  opacity: 0.22;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero, .search-bar, .nav, .section, .footer { position: relative; z-index: 1; }
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  text-align: center;
+  padding: 72px 24px 52px;
+  background:
+    radial-gradient(ellipse at 50% 110%, rgba(212,168,91,0.13) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% -20%, rgba(27,55,68,0.4) 0%, transparent 55%),
+    var(--charcoal-2);
+  color: var(--white);
+  border-bottom: 1px solid rgba(212,168,91,0.2);
+  overflow: hidden;
+}
+.hero::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: url("topo.svg") no-repeat center center / cover;
+  opacity: 0.06;
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 2; }
+
+.hero-tree {
+  width: 52px; height: auto;
+  opacity: 0.9; margin: 0 auto 20px; display: block;
+  filter: brightness(0) saturate(100%) invert(72%) sepia(31%) saturate(659%) hue-rotate(358deg) brightness(94%) contrast(89%);
+  animation: floatTree 4s ease-in-out infinite;
+}
+@keyframes floatTree {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-5px); }
+}
+
+.hero-wordmark {
+  display: block; margin: 0 auto 20px;
+  width: min(72%, 300px); height: auto;
+  animation: fadeUp 0.8s ease both 0.2s;
+}
+.hero-eyebrow {
+  font-family: "Neue Machina", sans-serif;
+  font-weight: 500; font-size: 9.5px; letter-spacing: 0.44em;
+  text-transform: uppercase; color: var(--gold); opacity: 0.9;
+  animation: fadeUp 0.8s ease both 0.4s;
+}
+.hero-rule {
+  width: 24mm; height: 0.5px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 16px auto 14px; opacity: 0.6;
+  animation: fadeUp 0.8s ease both 0.5s;
+}
+.hero-coords {
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 600; font-size: 9.5px; letter-spacing: 0.36em;
+  text-transform: uppercase; color: var(--gold); opacity: 0.7;
+  animation: fadeUp 0.8s ease both 0.6s;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── SEARCH ── */
+.search-bar {
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 10px 16px;
+  border-bottom: 0.5px solid var(--line);
+}
+.search-wrap {
+  max-width: 720px; margin: 0 auto;
+  position: relative;
+}
+.search-wrap svg {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  opacity: 0.35; pointer-events: none;
+}
+.search-input {
+  width: 100%;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px; letter-spacing: 0.04em;
+  color: var(--charcoal);
+  background: rgba(42,43,39,0.05);
+  border: 0.5px solid var(--line);
+  border-radius: 999px;
+  padding: 9px 16px 9px 36px;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.search-input::placeholder { opacity: 0.4; }
+.search-input:focus { border-color: var(--gold); background: rgba(212,168,91,0.04); }
+.search-count {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px; letter-spacing: 0.12em;
+  color: var(--charcoal); opacity: 0.4;
+  text-align: center; margin-top: 6px;
+  height: 14px;
+  transition: opacity 0.2s;
+}
+
+/* ── STICKY NAV ── */
+.nav {
+  position: sticky; top: 0; z-index: 30;
+  background: rgba(250,250,247,0.93);
+  backdrop-filter: saturate(180%) blur(16px);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  border-bottom: 0.5px solid var(--line);
+  padding: 0 14px;
+  height: var(--nav-h);
+  display: flex; align-items: center;
+  overflow-x: auto; overflow-y: hidden;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  gap: 2px;
+}
+.nav::-webkit-scrollbar { display: none; }
+
+.nav a {
+  display: inline-flex; align-items: center;
+  font-family: "Neue Machina", sans-serif;
+  font-weight: 500; font-size: 9.5px; letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--charcoal); opacity: 0.45;
+  text-decoration: none;
+  padding: 7px 13px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  position: relative;
+  transition: opacity 0.2s, color 0.2s;
+}
+.nav a::before {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: 999px;
+  border: 0.5px solid transparent;
+  background: transparent;
+  transition: border-color 0.25s, background 0.25s;
+}
+.nav a:hover { opacity: 0.75; }
+.nav a.active {
+  opacity: 1; color: var(--charcoal);
+}
+.nav a.active::before {
+  border-color: var(--charcoal);
+  background: rgba(42,43,39,0.05);
+}
+
+/* ── SECTION ── */
+.section {
+  padding: 56px 22px 10px;
+  max-width: 720px; margin: 0 auto;
+  display: none;
+}
+.section.visible { display: block; }
+.section.no-filter { display: block; }
+
+.section-header { margin-bottom: 32px; }
+.section-hero {
+  font-family: "Sloop Script", serif;
+  font-size: 46px; line-height: 1;
+  color: var(--charcoal); margin: 0 0 6px;
+}
+.section-eyebrow {
+  font-family: "Neue Machina", sans-serif;
+  font-weight: 500; font-size: 9px; letter-spacing: 0.34em;
+  text-transform: uppercase; color: var(--charcoal); opacity: 0.45;
+  margin: 0;
+}
+
+/* ── SUBSECTION ── */
+.subsection { margin-bottom: 40px; }
+.subsection h3 {
+  font-family: "Neue Machina", sans-serif;
+  font-weight: 500; font-size: 10.5px; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--charcoal);
+  margin: 0 0 4px;
+  padding-bottom: 10px;
+  border-bottom: 0.5px solid var(--charcoal);
+  opacity: 0.9;
+  display: flex; align-items: center; gap: 10px;
+}
+.subsection h3::after {
+  content: "";
+  flex: 1; height: 0.5px;
+  background: var(--gold);
+  opacity: 0.4;
+}
+.subsection-note {
+  font-size: 11px; opacity: 0.5;
+  margin: -2px 0 14px; letter-spacing: 0.02em;
+}
+
+/* ── ITEM ── */
+.item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 16px;
+  align-items: start;
+  padding: 15px 0;
+  border-bottom: 0.5px solid var(--line-2);
+  position: relative;
+  transition: background 0.2s;
+  border-radius: 0;
+  cursor: default;
+}
+.item::before {
+  content: "";
+  position: absolute;
+  left: -8px; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--gold);
+  border-radius: 2px;
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.25s ease;
+}
+.item:hover::before { transform: scaleY(1); }
+.item:hover { background: rgba(212,168,91,0.04); }
+.item:last-child { border-bottom: none; }
+
+.item-name {
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 600; font-size: 12px;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--charcoal);
+}
+.item-tag {
+  display: inline-block;
+  margin-left: 8px;
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 400; font-size: 8.5px;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--charcoal); opacity: 0.45;
+  background: rgba(42,43,39,0.06);
+  padding: 1px 6px; border-radius: 999px;
+}
+.item-desc {
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 400; font-size: 11.5px;
+  line-height: 1.55; color: var(--charcoal); opacity: 0.6;
+  margin: 5px 0 0;
+}
+.item-price {
+  font-family: "Neue Machina", sans-serif;
+  font-weight: 700; font-size: 13px;
+  color: var(--charcoal);
+  letter-spacing: 0.02em;
+  align-self: start;
+  white-space: nowrap;
+}
+.item-price::after { content: "k"; font-size: 10px; opacity: 0.5; margin-left: 1px; }
+
+/* highlight match */
+.item.hidden { display: none; }
+mark { background: rgba(212,168,91,0.3); color: inherit; border-radius: 2px; padding: 0 1px; }
+
+/* ── WINE ── */
+.wine-item {
+  padding: 14px 0;
+  border-bottom: 0.5px solid var(--line-2);
+  transition: background 0.2s;
+}
+.wine-item:hover { background: rgba(212,168,91,0.04); }
+.wine-item:last-child { border-bottom: none; }
+.wine-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 10px; flex-wrap: wrap;
+}
+.wine-prices { display: flex; gap: 16px; flex-shrink: 0; align-items: baseline; }
+.wine-price {
+  font-family: "Neue Machina", sans-serif;
+  font-weight: 700; font-size: 11.5px; color: var(--charcoal);
+  letter-spacing: 0.02em; white-space: nowrap;
+  min-width: 36px; text-align: right;
+}
+.wine-price::after { content: "k"; font-size: 9px; opacity: 0.45; margin-left: 1px; }
+.wine-price-empty {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11.5px; opacity: 0.2;
+  min-width: 36px; text-align: right;
+}
+.wine-headings {
+  display: flex; justify-content: flex-end;
+  gap: 16px;
+  font-family: "Neue Machina", sans-serif;
+  font-weight: 500; font-size: 8.5px;
+  letter-spacing: 0.34em; text-transform: uppercase;
+  color: var(--charcoal); opacity: 0.38;
+  margin: 0 0 8px;
+}
+.wine-headings span { min-width: 36px; text-align: right; }
+
+/* ── CHEF NOTE ── */
+.chef-note {
+  border: 0.5px solid rgba(212,168,91,0.4);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  margin: 40px 0 10px;
+  font-size: 11.5px; line-height: 1.65;
+  background: rgba(212,168,91,0.05);
+}
+.chef-note .label {
+  display: block;
+  font-family: "Neue Machina", sans-serif;
+  font-weight: 500; font-size: 9px; letter-spacing: 0.34em;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 8px;
+}
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  padding: 72px 24px 100px;
+  border-top: 0.5px solid var(--line);
+  margin-top: 60px;
+  background: linear-gradient(180deg, transparent, rgba(212,168,91,0.03));
+}
+.footer-tree { width: 32px; height: auto; opacity: 0.7; margin: 0 auto 16px; display: block; }
+.footer-tag {
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 600; font-size: 9px; letter-spacing: 0.48em;
+  text-transform: uppercase; color: var(--charcoal); opacity: 0.45;
+}
+.footer-sub {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px; opacity: 0.3;
+  margin-top: 8px; letter-spacing: 0.08em;
+}
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity: 0; transform: translateY(16px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.reveal.in { opacity: 1; transform: none; }
+
+/* ── BACK TO TOP ── */
+.btt {
+  position: fixed; bottom: 28px; right: 20px; z-index: 50;
+  width: 42px; height: 42px;
+  background: var(--charcoal-2);
+  border: 0.5px solid rgba(212,168,91,0.3);
+  border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
+  transform: translateY(8px);
+  cursor: pointer;
+}
+.btt.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.btt svg { color: var(--gold); }
+
+/* ── NO RESULTS ── */
+.no-results {
+  display: none;
+  text-align: center;
+  padding: 80px 24px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px; opacity: 0.4;
+  letter-spacing: 0.06em;
+}
+.no-results.show { display: block; }
+
+/* ── DESKTOP ── */
+@media (min-width: 720px) {
+  .hero { padding: 90px 24px 60px; }
+  .section { padding: 64px 32px 14px; }
+  .section-hero { font-size: 56px; }
+  .item-name { font-size: 12.5px; }
+  .item-desc { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-inner">
+    <img class="hero-tree" src="tree-white.png" alt="" aria-hidden="true">
+    <img class="hero-wordmark" src="botanist-wordmark-white.png" alt="The Botanist">
+    <div class="hero-eyebrow">In-Room Menu</div>
+    <div class="hero-rule"></div>
+    <div class="hero-coords">Desa Eko &middot; Munduk &middot; Bali</div>
+  </div>
+</header>
+
+<!-- SEARCH -->
+<div class="search-bar">
+  <div class="search-wrap">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input class="search-input" id="search" type="search" placeholder="Search anything on the menu…" autocomplete="off" spellcheck="false">
+  </div>
+  <div class="search-count" id="search-count"></div>
+</div>
+
+<!-- NAV -->
+<nav class="nav" id="nav" aria-label="Menu sections">
+  <a href="#morning">Morning</a>
+  <a href="#share">To share</a>
+  <a href="#mains">Mains</a>
+  <a href="#sweets">Sweets</a>
+  <a href="#refreshers">Refreshers</a>
+  <a href="#hot">Hot drinks</a>
+  <a href="#cold">Cold drinks</a>
+  <a href="#cocktails">Cocktails</a>
+  <a href="#beers">Beers</a>
+  <a href="#wine">Wine</a>
+</nav>
+
+<!-- ============ MORNING ============ -->
+<section class="section no-filter" id="morning">
+  <div class="section-header reveal">
+    <h2 class="section-hero">Morning at the table</h2>
+    <p class="section-eyebrow">Breakfast &middot; Bowls &middot; Juices</p>
+  </div>
+
+  <div class="subsection">
+    <h3>All-day breakfasts</h3>
+    <div class="item reveal" data-name="Banana Bread Fruits"><div><div class="item-name">Banana Bread &amp; Fruits<span class="item-tag">Vegetarian</span></div><p class="item-desc">3 slices, served with seasonal fruit &amp; house-made salted caramel.</p></div><span class="item-price">85</span></div>
+    <div class="item reveal" data-name="Vege Breakfast"><div><div class="item-name">Vege Breakfast<span class="item-tag">Vegan</span></div><p class="item-desc">Tofu scramble, sourdough, sautéed mushrooms, seasonal green harvest, baked pumpkin.</p></div><span class="item-price">90</span></div>
+    <div class="item reveal" data-name="King's Breakfast"><div><div class="item-name">King's Breakfast<span class="item-tag">Regular</span></div><p class="item-desc">2 eggs with sourdough, hashbrown, fruit, choice of salmon, bacon, or coconut bacon. Jam &amp; peanut butter.</p></div><span class="item-price">108</span></div>
+    <div class="item reveal" data-name="Eggs Benny Croissant"><div><div class="item-name">Eggs Benny Croissant<span class="item-tag">Regular</span></div><p class="item-desc">With Hollandaise, sautéed spinach &amp; choice of salmon or bacon.</p></div><span class="item-price">120</span></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Smoothie bowls</h3>
+    <div class="item reveal" data-name="Spirulina Bowl"><div><div class="item-name">Spirulina<span class="item-tag">Vegan</span></div><p class="item-desc">Banana, spinach, mango, strawberry, homemade granola, and spirulina.</p></div><span class="item-price">75</span></div>
+    <div class="item reveal" data-name="Chocolate PB Bowl"><div><div class="item-name">Chocolate PB<span class="item-tag">Vegan</span></div><p class="item-desc">Banana, peanut butter, raw cacao, maca root, and chia seeds.</p></div><span class="item-price">75</span></div>
+    <div class="item reveal" data-name="Honey Berry Bowl"><div><div class="item-name">Honey Berry<span class="item-tag">Vegan</span></div><p class="item-desc">Strawberry, banana, honey, home-made granola, and dried coconut.</p></div><span class="item-price">75</span></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Add-ons</h3>
+    <div class="item reveal" data-name="Nut milk"><div><div class="item-name">Nut milk</div><p class="item-desc">150 ml / serve — cashew, dates, oats &amp; coconut.</p></div><span class="item-price">10</span></div>
+    <div class="item reveal" data-name="Wagyu beef tallow"><div><div class="item-name">Wagyu beef tallow</div><p class="item-desc">Minyak sapi tulen :)</p></div><span class="item-price">15</span></div>
+    <div class="item reveal" data-name="Veggie sides"><div><div class="item-name">Veggie sides</div><p class="item-desc">Hashbrown, sautéed mushrooms, avocado, fruits, sourdough, rosemary pumpkins.</p></div><span class="item-price">30</span></div>
+    <div class="item reveal" data-name="Premium toppings"><div><div class="item-name">Premium toppings</div><p class="item-desc">Cheese, bacon, coconut bacon, salmon.</p></div><span class="item-price">45</span></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Cold-pressed juices</h3>
+    <div class="item reveal" data-name="Seasonal Botanist Harvest"><div><div class="item-name">Seasonal Botanist Harvest</div><p class="item-desc">Banana, orange, cucumber &amp; carrot from our seasonal harvest.</p></div><span class="item-price">42</span></div>
+    <div class="item reveal" data-name="Sunny Morning"><div><div class="item-name">Sunny Morning</div><p class="item-desc">Pineapple, mint, spinach, cilantro, cucumber, ginger, coconut water.</p></div><span class="item-price">48</span></div>
+    <div class="item reveal" data-name="Immunity Boost"><div><div class="item-name">Immunity Boost</div><p class="item-desc">Carrot, orange, turmeric, ginger, white pepper.</p></div><span class="item-price">48</span></div>
+    <div class="item reveal" data-name="Dragon Cleanse"><div><div class="item-name">Dragon Cleanse</div><p class="item-desc">Dragon fruit, apple, romaine lettuce, cucumber, lime, honey.</p></div><span class="item-price">48</span></div>
+    <div class="item reveal" data-name="Green Power"><div><div class="item-name">Green Power</div><p class="item-desc">Cucumber, celery, apple, spirulina, parsley, mint, moringa, coconut water.</p></div><span class="item-price">48</span></div>
+    <div class="item reveal" data-name="Tummy Detox"><div><div class="item-name">Tummy Detox</div><p class="item-desc">Spinach, celery, cucumber, ginger, turmeric &amp; coconut water.</p></div><span class="item-price">48</span></div>
+    <div class="item reveal" data-name="Iron Booster"><div><div class="item-name">Iron Booster</div><p class="item-desc">Beetroot, apple, carrot, lemon &amp; ginger.</p></div><span class="item-price">48</span></div>
+  </div>
+</section>
+
+<!-- ============ TO SHARE ============ -->
+<section class="section no-filter" id="share">
+  <div class="section-header reveal">
+    <h2 class="section-hero">To share, to begin</h2>
+    <p class="section-eyebrow">Starters &middot; Soups &middot; Salads</p>
+  </div>
+
+  <div class="subsection">
+    <h3>Starters &amp; sharing</h3>
+    <div class="item reveal" data-name="Spring Rolls"><div><div class="item-name">Spring Rolls<span class="item-tag">Vegetarian</span></div><p class="item-desc">Crispy garden rolls with house chili sauce.</p></div><span class="item-price">51</span></div>
+    <div class="item reveal" data-name="Botanist O-Ring Tower"><div><div class="item-name">Botanist O-Ring Tower<span class="item-tag">Vegetarian</span></div><p class="item-desc">Fried onion rings, with tartar &amp; homemade chili sauce.</p></div><span class="item-price">62</span></div>
+    <div class="item reveal" data-name="Eggplant Bartha"><div><div class="item-name">Eggplant Bartha<span class="item-tag">Vegetarian</span></div><p class="item-desc">Roasted eggplant, Indian spices &amp; feta in folded paratha with house sauce.</p></div><span class="item-price">79</span></div>
+    <div class="item reveal" data-name="Botanist Cauliflower Wings"><div><div class="item-name">Botanist Cauliflower Wings<span class="item-tag">Vegan</span></div><p class="item-desc">Garden-fresh, crispy in sweet Thai sauce, topped with coriander &amp; sesame.</p></div><span class="item-price">90</span></div>
+    <div class="item reveal" data-name="Botanist Thai Wings"><div><div class="item-name">Botanist Thai Wings<span class="item-tag">Regular</span></div><p class="item-desc">Locally sourced chicken in Thai marinade, topped with coriander &amp; sesame.</p></div><span class="item-price">102</span></div>
+    <div class="item reveal" data-name="Chicken Taco Board"><div><div class="item-name">Chicken Taco Board (3)<span class="item-tag">Regular / Vegan</span></div><p class="item-desc">With mango salsa, lettuce, seasonal guac &amp; chimichurri.</p></div><span class="item-price">125</span></div>
+    <div class="item reveal" data-name="Mezze Platter"><div><div class="item-name">Mezze Platter<span class="item-tag">Vegetarian</span></div><p class="item-desc">Great for sharing. Eggplant dip, hummus, feta, olives &amp; bruschetta. Served with veggies, pita &amp; taro chips.</p></div><span class="item-price">165</span></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Soups &amp; dahl</h3>
+    <div class="item reveal" data-name="Tomato Soup"><div><div class="item-name">Tomato Soup<span class="item-tag">Vegetarian / Vegan</span></div><p class="item-desc">Slow-cooked tomato soup with virgin olive oil, served with garlic bread.</p></div><span class="item-price">77</span></div>
+    <div class="item reveal" data-name="Pumpkin Soup"><div><div class="item-name">Pumpkin Soup<span class="item-tag">Vegetarian / Vegan</span></div><p class="item-desc">Silky smooth, rich pumpkin soup with coconut cream &amp; pumpkin seeds.</p></div><span class="item-price">77</span></div>
+    <div class="item reveal" data-name="Cauliflower Soup"><div><div class="item-name">Cauliflower Soup<span class="item-tag">Vegetarian</span></div><p class="item-desc">Creamy roasted cauliflower soup, served with croutons and garlic bread.</p></div><span class="item-price">77</span></div>
+    <div class="item reveal" data-name="Momma's Dahl"><div><div class="item-name">Momma's Dahl<span class="item-tag">Vegetarian / Vegan</span></div><p class="item-desc">Traditional Indian dahl with seasonal veggies &amp; coconut cream. Served with toasted pita or chapati.</p></div><span class="item-price">96</span></div>
+    <div class="item reveal" data-name="Homemade Tom Yum"><div><div class="item-name">Homemade Tom Yum<span class="item-tag">Regular</span></div><p class="item-desc">Bold flavours with shrimp, zucchini, button mushrooms &amp; capsicum.</p></div><span class="item-price">96</span></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Salads</h3>
+    <div class="item reveal" data-name="Botanist's Tropical Salad"><div><div class="item-name">Botanist's Tropical Salad<span class="item-tag">Vegetarian</span></div><p class="item-desc">Greens, purple cabbage, cherry tomatoes &amp; seasonal fruit in a passion-fruit vinaigrette.</p></div><span class="item-price">79</span></div>
+    <div class="item reveal" data-name="Chicken Caesar Salad"><div><div class="item-name">Chicken Caesar Salad<span class="item-tag">Regular</span></div><p class="item-desc">Baby romaine, soft egg, croutons, cashew, parmesan, Caesar dressing, anchovies &amp; grilled chicken.</p></div><span class="item-price">85</span></div>
+  </div>
+</section>
+
+<!-- ============ MAINS ============ -->
+<section class="section no-filter" id="mains">
+  <div class="section-header reveal">
+    <h2 class="section-hero">Of fire, of dough &amp; rice</h2>
+    <p class="section-eyebrow">Mains &middot; Burgers &middot; Pizzas</p>
+  </div>
+
+  <div class="subsection">
+    <h3>Mains</h3>
+    <div class="item reveal" data-name="Nasi Goreng Mie Goreng"><div><div class="item-name">Nasi Goreng or Mie Goreng<span class="item-tag">Regular</span></div><p class="item-desc">Indonesia's iconic dish, wok-tossed with bold spices, veggies &amp; a perfect fried egg. A little spicy &amp; legendary.</p></div><span class="item-price">68</span></div>
+    <div class="item reveal" data-name="Falafel Pita Wrap"><div><div class="item-name">Falafel Pita or Wrap<span class="item-tag">Vegetarian</span></div><p class="item-desc">Crispy vegan falafel, cucumber, tomato, parsley &amp; tahini in pita or tortilla. Served with wedges.</p></div><span class="item-price">90</span></div>
+    <div class="item reveal" data-name="Maldivian Curry"><div><div class="item-name">Maldivian Curry<span class="item-tag">Vegan</span></div><p class="item-desc">Seasonal veggies in creamy coconut curry, served with red rice.</p></div><span class="item-price">90</span></div>
+    <div class="item reveal" data-name="Pesto Pasta"><div><div class="item-name">Pesto Pasta<span class="item-tag">Vegan</span></div><p class="item-desc">Homemade fresh basil pesto, vegan parmesan. Gluten-free pasta available, +10k.</p></div><span class="item-price">90</span></div>
+    <div class="item reveal" data-name="Botanist Bowl"><div><div class="item-name">Botanist Bowl<span class="item-tag">Vegan</span></div><p class="item-desc">Seasonal vegetables, red rice, marinated tempeh, served with Dragon sauce.</p></div><span class="item-price">90</span></div>
+    <div class="item reveal" data-name="Mushroom Gnocchi"><div><div class="item-name">Mushroom Gnocchi<span class="item-tag">Vegetarian</span></div><p class="item-desc">Homemade potato gnocchi in creamy parmesan sauce with sautéed mushrooms.</p></div><span class="item-price">90</span></div>
+    <div class="item reveal" data-name="Mac Cheese"><div><div class="item-name">Mac &amp; Cheese<span class="item-tag">Regular</span></div><p class="item-desc">Oven-baked, served sizzling hot, topped with crispy bacon. Vegan option available.</p></div><span class="item-price">96</span></div>
+    <div class="item reveal" data-name="Lemon Garlic Shrimp Pasta"><div><div class="item-name">Lemon Garlic Shrimp Pasta<span class="item-tag">Regular</span></div><p class="item-desc">Pasta tossed with garlic, fresh lemon juice, olive oil, herbs, and sautéed shrimp.</p></div><span class="item-price">120</span></div>
+    <div class="item reveal" data-name="Beef Involtini"><div><div class="item-name">Beef Involtini</div><p class="item-desc">Our version with spinach &amp; mushrooms, served with mashed pumpkin, veggies &amp; warm tomato sauce.</p></div><span class="item-price">120</span></div>
+    <div class="item reveal" data-name="Pork Ribs"><div><div class="item-name">Pork Ribs (200g)<span class="item-tag">Regular</span></div><p class="item-desc">Slow-cooked, with BBQ sauce &amp; sweet-potato fries.</p></div><span class="item-price">205</span></div>
+    <div class="item reveal" data-name="Tenderloin Steak"><div><div class="item-name">Tenderloin Steak (200g)<span class="item-tag">Regular</span></div><p class="item-desc">With rosemary sauce, mozzarella-stuffed mash &amp; sautéed greens.</p></div><span class="item-price">280</span></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Burgers</h3>
+    <div class="item reveal" data-name="Cajun Chicken Burger"><div><div class="item-name">Cajun Chicken Burger<span class="item-tag">Regular</span></div><p class="item-desc">Crispy, mozzarella &amp; lettuce on a homemade bun. Served with wedges &amp; coleslaw.</p></div><span class="item-price">148</span></div>
+    <div class="item reveal" data-name="Beef Bacon Burger"><div><div class="item-name">Beef &amp; Bacon Burger<span class="item-tag">Regular</span></div><p class="item-desc">Homemade bun, premium beef, bacon, mozzarella, caramelised onions, lettuce &amp; BBQ sauce. Served with wedges &amp; coleslaw.</p></div><span class="item-price">155</span></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Pizzas</h3>
+    <div class="item reveal" data-name="Margherita Pizza"><div><div class="item-name">Margherita<span class="item-tag">Vegetarian</span></div><p class="item-desc">Fresh dough topped with homemade sauce, mozzarella &amp; basil.</p></div><span class="item-price">85</span></div>
+    <div class="item reveal" data-name="Pepperoni Pizza"><div><div class="item-name">Pepperoni<span class="item-tag">Regular</span></div><p class="item-desc">Fresh dough with homemade sauce, mozzarella, pepperoni &amp; oregano.</p></div><span class="item-price">98</span></div>
+    <div class="item reveal" data-name="Cheesy Chicken Pizza"><div><div class="item-name">Cheesy Chicken<span class="item-tag">Regular</span></div><p class="item-desc">Sautéed chicken, onion, capsicum &amp; mozzarella on béchamel &amp; fresh dough.</p></div><span class="item-price">130</span></div>
+    <div class="item reveal" data-name="BBQ Chicken Pizza"><div><div class="item-name">BBQ Chicken<span class="item-tag">Regular</span></div><p class="item-desc">Grilled marinated chicken, capsicum, mozzarella &amp; house BBQ sauce on fresh dough.</p></div><span class="item-price">120</span></div>
+    <div class="item reveal" data-name="Tartufina Pizza"><div><div class="item-name">Tartufina<span class="item-tag">Vegetarian</span></div><p class="item-desc">Mushrooms, parmesan, sunny-side-up egg &amp; truffle oil on fresh dough with house sauce.</p></div><span class="item-price">125</span></div>
+  </div>
+</section>
+
+<!-- ============ SWEETS ============ -->
+<section class="section no-filter" id="sweets">
+  <div class="section-header reveal">
+    <h2 class="section-hero">Sweet treats</h2>
+    <p class="section-eyebrow">After dinner &middot; Anytime</p>
+  </div>
+  <div class="subsection">
+    <div class="item reveal" data-name="Ibu Muffin"><div><div class="item-name">Ibu Muffin<span class="item-tag">Vegetarian / GF</span></div><p class="item-desc">Mom's freshly baked zucchini and chocolate-chip muffin.</p></div><span class="item-price">40</span></div>
+    <div class="item reveal" data-name="Chocolate Nutty Bar"><div><div class="item-name">Chocolate &amp; Nutty Bar<span class="item-tag">Vegan / GF</span></div><p class="item-desc">Almond, hazelnut, cashew butter, raw cacao, coconut oil, and coconut palm sugar.</p></div><span class="item-price">45</span></div>
+    <div class="item reveal" data-name="Banana Bread slice"><div><div class="item-name">Banana Bread<span class="item-tag">Vegetarian</span></div><p class="item-desc">Freshly baked banana bread, with Botanist salted caramel sauce.</p></div><span class="item-price">55</span></div>
+    <div class="item reveal" data-name="Pisang Goreng"><div><div class="item-name">Pisang Goreng<span class="item-tag">Vegetarian</span></div><p class="item-desc">Crispy deep-fried banana batter, topped with cinnamon sugar and Balinese palm sugar.</p></div><span class="item-price">68</span></div>
+    <div class="item reveal" data-name="Apple Crumble Pie"><div><div class="item-name">Apple Crumble Pie<span class="item-tag">Vegetarian</span></div><p class="item-desc">Baked apples with cinnamon and brown sugar, topped with a golden buttery crumble.</p></div><span class="item-price">102</span></div>
+    <div class="item reveal" data-name="Ricotta Canoli"><div><div class="item-name">Ricotta Canoli<span class="item-tag">Vegetarian</span></div><p class="item-desc">Crisp pastry shells filled with sweet ricotta cream, lemon zest, dusting of powdered sugar.</p></div><span class="item-price">108</span></div>
+    <div class="item reveal" data-name="Chocolate Fondue"><div><div class="item-name">Chocolate Fondue<span class="item-tag">Vegetarian</span></div><p class="item-desc">Seasonal fruits, oatmeal cookies, and a warm pot of melted chocolate for sharing.</p></div><span class="item-price">142</span></div>
+  </div>
+</section>
+
+<!-- ============ REFRESHERS ============ -->
+<section class="section no-filter" id="refreshers">
+  <div class="section-header reveal">
+    <h2 class="section-hero">Refreshers</h2>
+    <p class="section-eyebrow">Sodas &middot; Lemonades &middot; House blends</p>
+  </div>
+  <div class="subsection">
+    <div class="item reveal" data-name="Sodas Coke Tonic Sprite"><div><div class="item-name">Sodas — Coke, Tonic, Sprite</div><p class="item-desc">Coke, Zero Coke, tonic water.</p></div><span class="item-price">25</span></div>
+    <div class="item reveal" data-name="Sparkling Rain Water"><div><div class="item-name">Sparkling Rain Water</div><p class="item-desc">Bali rain water.</p></div><span class="item-price">36</span></div>
+    <div class="item reveal" data-name="Markisa Squash"><div><div class="item-name">Markisa Squash</div><p class="item-desc">Tonic water, orange juice, passionfruit.</p></div><span class="item-price">40</span></div>
+    <div class="item reveal" data-name="Whole Young Coconut"><div><div class="item-name">Whole Young Coconut</div><p class="item-desc">Fresh coconut.</p></div><span class="item-price">40</span></div>
+    <div class="item reveal" data-name="Sparkling Cucumber"><div><div class="item-name">Sparkling Cucumber</div><p class="item-desc">Cucumber juice &amp; soda water.</p></div><span class="item-price">40</span></div>
+    <div class="item reveal" data-name="Rosella Lemonade"><div><div class="item-name">Rosella Lemonade</div><p class="item-desc">Homemade rosella lemonade, lime, cinnamon and coconut sugar.</p></div><span class="item-price">45</span></div>
+    <div class="item reveal" data-name="Black Lemonade"><div><div class="item-name">Black Lemonade</div><p class="item-desc">Activated charcoal ice cubes, pandan leaf, lemongrass, apple, spinach, mint, kaffir leaf.</p></div><span class="item-price">45</span></div>
+    <div class="item reveal" data-name="Dragon Fruit Limeade"><div><div class="item-name">Dragon Fruit Limeade</div><p class="item-desc">Dragon fruit, cucumber, lime juice &amp; simple syrup.</p></div><span class="item-price">45</span></div>
+    <div class="item reveal" data-name="Poco Sunset"><div><div class="item-name">Poco Sunset</div><p class="item-desc">Pineapple and orange juice blended with coconut cream, layered with telang tea.</p></div><span class="item-price">51</span></div>
+    <div class="item reveal" data-name="Basil Paradise"><div><div class="item-name">Basil Paradise</div><p class="item-desc">Strawberry, fresh basil, lemon juice, orange juice, lightly sweetened, topped with tonic water.</p></div><span class="item-price">62</span></div>
+  </div>
+</section>
+
+<!-- ============ HOT DRINKS ============ -->
+<section class="section no-filter" id="hot">
+  <div class="section-header reveal">
+    <h2 class="section-hero">Hot drinks &amp; teas</h2>
+    <p class="section-eyebrow">Coffees &middot; House teas &middot; Wellness</p>
+  </div>
+
+  <div class="subsection">
+    <h3>Coffees</h3>
+    <p class="subsection-note">*Decaf coffee available on request.</p>
+    <div class="item reveal" data-name="Bali Kopi"><div><div class="item-name">Bali Kopi</div></div><span class="item-price">19</span></div>
+    <div class="item reveal" data-name="Espresso Americano"><div><div class="item-name">Espresso / Americano</div></div><span class="item-price">40</span></div>
+    <div class="item reveal" data-name="Cappuccino Flat White Latte Piccolo Macchiato"><div><div class="item-name">Cappuccino &middot; Flat White &middot; Latte &middot; Piccolo &middot; Macchiato</div></div><span class="item-price">45</span></div>
+    <div class="item reveal" data-name="Bulletproof Coffee"><div><div class="item-name">Bulletproof Coffee</div><p class="item-desc">MCT oil, ghee, shot of espresso.</p></div><span class="item-price">68</span></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Hot drinks</h3>
+    <p class="subsection-note">*Add idr 5k for nut milk or cold.</p>
+    <div class="item reveal" data-name="Organic Local Tea"><div><div class="item-name">Organic Local Tea</div><p class="item-desc">Black, green, lemon, ginger.</p></div><span class="item-price">28</span></div>
+    <div class="item reveal" data-name="Hot Chocolate"><div><div class="item-name">Hot Chocolate<span class="item-tag">Vegan / Regular</span></div><p class="item-desc">Cacao, coconut sugar, milk.</p></div><span class="item-price">39</span></div>
+    <div class="item reveal" data-name="Chai Latte"><div><div class="item-name">Chai Latte<span class="item-tag">Vegan / Regular</span></div><p class="item-desc">Spicy homemade chai blend and milk.</p></div><span class="item-price">40</span></div>
+    <div class="item reveal" data-name="Golden Milk"><div><div class="item-name">Golden Milk<span class="item-tag">Vegan / Regular</span></div><p class="item-desc">Turmeric, ginger, cinnamon, coconut oil, black pepper, dates, spices and milk.</p></div><span class="item-price">45</span></div>
+    <div class="item reveal" data-name="Matcha Latte"><div><div class="item-name">Matcha Latte<span class="item-tag">Vegan / Regular</span></div><p class="item-desc">Organic matcha and milk.</p></div><span class="item-price">50</span></div>
+    <div class="item reveal" data-name="Raw Spicy Cacao"><div><div class="item-name">Raw Spicy Cacao<span class="item-tag">Vegan / Regular</span></div><p class="item-desc">Raw cacao, cacao butter, ginger, spices, milk.</p></div><span class="item-price">61</span></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Signature teas</h3>
+    <div class="item reveal" data-name="Soothing Tea"><div><div class="item-name">Soothing<span class="item-tag">Calms body &amp; mind</span></div><p class="item-desc">Sage, mint, pandan, lemon, calendula, rose, lemongrass.</p></div><span class="item-price">39</span></div>
+    <div class="item reveal" data-name="Detox Tea"><div><div class="item-name">Detox<span class="item-tag">Reduce cravings &amp; flush toxins</span></div><p class="item-desc">Green tea, moringa, mint, avocado leaf, mangosteen, lemon.</p></div><span class="item-price">39</span></div>
+    <div class="item reveal" data-name="Brain Boost Tea"><div><div class="item-name">Brain Boost<span class="item-tag">Reduce fatigue, improve memory</span></div><p class="item-desc">Green tea, moringa, mint, avocado leaf, mangosteen, lemon.</p></div><span class="item-price">39</span></div>
+    <div class="item reveal" data-name="Calming Tea"><div><div class="item-name">Calming<span class="item-tag">Perfect for unwinding</span></div><p class="item-desc">Pandan, avocado leaf, soursop, clove, orange.</p></div><span class="item-price">39</span></div>
+    <div class="item reveal" data-name="Immunity Tea"><div><div class="item-name">Immunity<span class="item-tag">Supports immune function</span></div><p class="item-desc">Star anise, ginger, licorice, lemongrass, moringa, clove, mangosteen, lemon.</p></div><span class="item-price">39</span></div>
+    <div class="item reveal" data-name="Digestive Tea"><div><div class="item-name">Digestive<span class="item-tag">Supports gut health</span></div><p class="item-desc">Papaya leaf, mint, ginger, licorice, lemongrass, turmeric, lemon.</p></div><span class="item-price">39</span></div>
+  </div>
+</section>
+
+<!-- ============ COLD DRINKS ============ -->
+<section class="section no-filter" id="cold">
+  <div class="section-header reveal">
+    <h2 class="section-hero">Cold drinks &amp; smoothies</h2>
+    <p class="section-eyebrow">Signature lattes &middot; Superfood smoothies</p>
+  </div>
+
+  <div class="subsection">
+    <h3>Signature drinks &middot; cold only</h3>
+    <div class="item reveal" data-name="Botanist Latte"><div><div class="item-name">Botanist Latte<span class="item-tag">Vegan / Regular</span></div><p class="item-desc">Sweet, creamy latte with a fruity twist — topped with fresh-harvest strawberry or banana.</p></div><span class="item-price">53</span></div>
+    <div class="item reveal" data-name="Dragon Jade Latte"><div><div class="item-name">Dragon Jade Latte<span class="item-tag">Vegan / Regular</span></div><p class="item-desc">Dragon fruit &amp; matcha blend, topped with fluffy foam and dragon-fruit dust.</p></div><span class="item-price">53</span></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Superfood smoothies</h3>
+    <div class="item reveal" data-name="Hakuna Matata"><div><div class="item-name">Hakuna Matata<span class="item-tag">Vegan</span></div><p class="item-desc">Papaya, orange, strawberry, cardamom, ginger, maca powder and plant-based milk.</p></div><span class="item-price">51</span></div>
+    <div class="item reveal" data-name="Cacao Bliss"><div><div class="item-name">Cacao Bliss<span class="item-tag">Vegan</span></div><p class="item-desc">Banana, dates, raw cacao, cacao nibs, chia seeds and plant-based milk.</p></div><span class="item-price">62</span></div>
+    <div class="item reveal" data-name="Matcha PB"><div><div class="item-name">Matcha PB<span class="item-tag">Vegan</span></div><p class="item-desc">Organic matcha powder, frozen banana, peanut butter, dates &amp; plant-based milk.</p></div><span class="item-price">62</span></div>
+    <div class="item reveal" data-name="Munduk Root"><div><div class="item-name">Munduk Root<span class="item-tag">Vegan</span></div><p class="item-desc">Dragon fruit, pineapple, beetroot and orange juice — naturally sweet, refreshing.</p></div><span class="item-price">66</span></div>
+    <div class="item reveal" data-name="Mango Madness"><div><div class="item-name">Mango Madness<span class="item-tag">Vegan</span></div><p class="item-desc">Mango, strawberry, papaya, maca powder, chia seed and coconut water.</p></div><span class="item-price">96</span></div>
+  </div>
+</section>
+
+<!-- ============ COCKTAILS ============ -->
+<section class="section no-filter" id="cocktails">
+  <div class="section-header reveal">
+    <h2 class="section-hero">Cocktails</h2>
+    <p class="section-eyebrow">House classics &middot; Botanist signatures</p>
+  </div>
+  <div class="subsection">
+    <div class="item reveal" data-name="Gin Tonic"><div><div class="item-name">Gin &amp; Tonic</div><p class="item-desc">Gin, tonic, your choice of fresh lime, seasonal syrup, passionfruit, or ginger.</p></div><span class="item-price">110</span></div>
+    <div class="item reveal" data-name="Whiskey Sour"><div><div class="item-name">Whiskey Sour</div><p class="item-desc">Whiskey rounded with raw honey and a bright squeeze of lemon.</p></div><span class="item-price">110</span></div>
+    <div class="item reveal" data-name="Brumble"><div><div class="item-name">Brumble</div><p class="item-desc">Seasonal berries muddled into gin, lifted with sweet vermouth.</p></div><span class="item-price">120</span></div>
+    <div class="item reveal" data-name="Negroni"><div><div class="item-name">Negroni</div><p class="item-desc">Equal parts Campari, gin and sweet vermouth — bittersweet, classic.</p></div><span class="item-price">130</span></div>
+    <div class="item reveal" data-name="Espresso Martini"><div><div class="item-name">Espresso Martini</div><p class="item-desc">Cold espresso shaken with vodka or gin and a whisper of coffee liqueur.</p></div><span class="item-price">130</span></div>
+    <div class="item reveal" data-name="Old Fashioned"><div><div class="item-name">Old Fashioned</div><p class="item-desc">Bourbon, sugar cube, Angostura bitters — slow-stirred, no apologies.</p></div><span class="item-price">130</span></div>
+    <div class="item reveal" data-name="Santa's Kiss"><div><div class="item-name">Santa's Kiss</div><p class="item-desc">Gin, rosella and fresh lime, a touch of simple syrup, finished with tonic and lemon.</p></div><span class="item-price">140</span></div>
+    <div class="item reveal" data-name="New York Sour"><div><div class="item-name">New York Sour</div><p class="item-desc">Whisky, lemon and simple syrup, finished with a float of red wine.</p></div><span class="item-price">140</span></div>
+  </div>
+</section>
+
+<!-- ============ BEERS ============ -->
+<section class="section no-filter" id="beers">
+  <div class="section-header reveal">
+    <h2 class="section-hero">Beers</h2>
+    <p class="section-eyebrow">Local brews &middot; Island Originals</p>
+  </div>
+  <div class="subsection">
+    <div class="item reveal" data-name="Bintang Large"><div><div class="item-name">Bintang &middot; Large</div><p class="item-desc">Bintang.</p></div><span class="item-price">80</span></div>
+    <div class="item reveal" data-name="Bintang Small"><div><div class="item-name">Bintang &middot; Small</div><p class="item-desc">Bintang.</p></div><span class="item-price">40</span></div>
+    <div class="item reveal" data-name="Pilsner"><div><div class="item-name">Pilsner</div><p class="item-desc">Island Brewing &middot; 4.1% &middot; 20 IBU.</p></div><span class="item-price">52</span></div>
+    <div class="item reveal" data-name="Witty White Seasonal"><div><div class="item-name">Witty White<span class="item-tag">Seasonal</span></div><p class="item-desc">IOI &middot; 4.81% &middot; 25 IBU.</p></div><span class="item-price">62</span></div>
+    <div class="item reveal" data-name="Island Hoppin' Ale"><div><div class="item-name">Island Hoppin' Ale</div><p class="item-desc">IOI &middot; 4.74% &middot; 26 IBU.</p></div><span class="item-price">64</span></div>
+    <div class="item reveal" data-name="Kölsch"><div><div class="item-name">Kölsch</div><p class="item-desc">Black Sand &middot; 4.2% &middot; 18 IBU.</p></div><span class="item-price">65</span></div>
+    <div class="item reveal" data-name="Small Hazy"><div><div class="item-name">Small Hazy</div><p class="item-desc">Island Brewing &middot; 4.8% &middot; 10 IBU.</p></div><span class="item-price">65</span></div>
+    <div class="item reveal" data-name="IPA"><div><div class="item-name">IPA</div><p class="item-desc">Black Sand &middot; 6.3% &middot; 35 IBU.</p></div><span class="item-price">85</span></div>
+    <div class="item reveal" data-name="The Islandman XIPA"><div><div class="item-name">The Islandman XIPA</div><p class="item-desc">IOI &middot; 7.98% &middot; 50 IBU.</p></div><span class="item-price">97</span></div>
+  </div>
+</section>
+
+<!-- ============ WINE ============ -->
+<section class="section no-filter" id="wine">
+  <div class="section-header reveal">
+    <h2 class="section-hero">The cellar</h2>
+    <p class="section-eyebrow">By the glass &middot; Carafe &middot; Bottle</p>
+  </div>
+
+  <div class="subsection">
+    <h3>Red wine</h3>
+    <div class="wine-headings">
+      <span>Glass</span><span>Carafe</span><span>Bottle</span>
+    </div>
+    <div class="wine-item reveal" data-name="Hatten Red wine"><div class="wine-row"><div><div class="item-name">Hatten Red</div><p class="item-desc">North Bali &middot; Muscat St. Vallier.</p></div><div class="wine-prices"><span class="wine-price">90</span><span class="wine-price">192</span><span class="wine-price-empty">—</span></div></div></div>
+    <div class="wine-item reveal" data-name="Isola Red wine"><div class="wine-row"><div><div class="item-name">Isola</div><p class="item-desc">Bedugul, Bali &middot; 2020 &middot; Malvasia Nera &amp; Syrah.</p></div><div class="wine-prices"><span class="wine-price">102</span><span class="wine-price">192</span><span class="wine-price">440</span></div></div></div>
+    <div class="wine-item reveal" data-name="Castillo de Magnia Tinto wine"><div class="wine-row"><div><div class="item-name">Castillo de Magnia Tinto</div><p class="item-desc">Spain &middot; Tempranillo.</p></div><div class="wine-prices"><span class="wine-price">125</span><span class="wine-price">270</span><span class="wine-price">520</span></div></div></div>
+    <div class="wine-item reveal" data-name="La Vigne di Sammarco Red wine"><div class="wine-row"><div><div class="item-name">La Vigne di Sammarco &middot; Red</div><p class="item-desc">Puglia, Italy &middot; 2018 &middot; Primitivo di Manduria.</p></div><div class="wine-prices"><span class="wine-price">148</span><span class="wine-price">350</span><span class="wine-price">720</span></div></div></div>
+    <div class="wine-item reveal" data-name="Tierra del Fuego Reserve wine"><div class="wine-row"><div><div class="item-name">Tierra del Fuego Reserve</div><p class="item-desc">Chile &middot; 2019 &middot; Cabernet Sauvignon.</p></div><div class="wine-prices"><span class="wine-price">170</span><span class="wine-price">360</span><span class="wine-price">745</span></div></div></div>
+    <div class="wine-item reveal" data-name="Finca Las Palmas Gran Reserva wine"><div class="wine-row"><div><div class="item-name">Finca Las Palmas Gran Reserva</div><p class="item-desc">Mendoza, Argentina &middot; 2016 &middot; Malbec.</p></div><div class="wine-prices"><span class="wine-price-empty">—</span><span class="wine-price-empty">—</span><span class="wine-price">790</span></div></div></div>
+    <div class="wine-item reveal" data-name="Château du Haut Piquat wine"><div class="wine-row"><div><div class="item-name">Château du Haut Piquat</div><p class="item-desc">Lussac Saint-Émilion, France &middot; Merlot.</p></div><div class="wine-prices"><span class="wine-price-empty">—</span><span class="wine-price-empty">—</span><span class="wine-price">960</span></div></div></div>
+    <div class="wine-item reveal" data-name="Altanza Reserva Rioja wine"><div class="wine-row"><div><div class="item-name">Altanza Reserva Rioja</div><p class="item-desc">Rioja, Spain &middot; Tempranillo.</p></div><div class="wine-prices"><span class="wine-price-empty">—</span><span class="wine-price-empty">—</span><span class="wine-price">1100</span></div></div></div>
+  </div>
+
+  <div class="subsection">
+    <h3>White wine</h3>
+    <div class="wine-headings">
+      <span>Glass</span><span>Carafe</span><span>Bottle</span>
+    </div>
+    <div class="wine-item reveal" data-name="Hatten White wine"><div class="wine-row"><div><div class="item-name">Hatten White</div><p class="item-desc">North Bali &middot; Alphonse Lavallée.</p></div><div class="wine-prices"><span class="wine-price">90</span><span class="wine-price">192</span><span class="wine-price-empty">—</span></div></div></div>
+    <div class="wine-item reveal" data-name="Isola White wine"><div class="wine-row"><div><div class="item-name">Isola White</div><p class="item-desc">Bedugul, Bali &middot; 2020 &middot; Moscato.</p></div><div class="wine-prices"><span class="wine-price">102</span><span class="wine-price">192</span><span class="wine-price">440</span></div></div></div>
+    <div class="wine-item reveal" data-name="Castillo de Magnia Blanco wine"><div class="wine-row"><div><div class="item-name">Castillo de Magnia Blanco</div><p class="item-desc">Spain &middot; Verdejo.</p></div><div class="wine-prices"><span class="wine-price">125</span><span class="wine-price">270</span><span class="wine-price">520</span></div></div></div>
+    <div class="wine-item reveal" data-name="Phillipe Dreschler wine"><div class="wine-row"><div><div class="item-name">Phillipe Dreschler</div><p class="item-desc">Alsace, France &middot; 2016 &middot; Sylvaner.</p></div><div class="wine-prices"><span class="wine-price-empty">—</span><span class="wine-price-empty">—</span><span class="wine-price">565</span></div></div></div>
+    <div class="wine-item reveal" data-name="Tierra del Fuego White wine"><div class="wine-row"><div><div class="item-name">Tierra del Fuego &middot; White</div><p class="item-desc">Chile &middot; 2019 &middot; Sauvignon Blanc.</p></div><div class="wine-prices"><span class="wine-price">125</span><span class="wine-price">283</span><span class="wine-price">595</span></div></div></div>
+    <div class="wine-item reveal" data-name="La Vigne di Sammarco White wine"><div class="wine-row"><div><div class="item-name">La Vigne di Sammarco &middot; White</div><p class="item-desc">Salento, Italy &middot; 2018 &middot; Chardonnay.</p></div><div class="wine-prices"><span class="wine-price">148</span><span class="wine-price">350</span><span class="wine-price">680</span></div></div></div>
+  </div>
+
+  <div class="subsection">
+    <h3>Rosé &amp; sparkling</h3>
+    <div class="wine-headings">
+      <span>Glass</span><span>Carafe</span><span>Bottle</span>
+    </div>
+    <div class="wine-item reveal" data-name="Isola Rosé wine"><div class="wine-row"><div><div class="item-name">Isola Rosé</div><p class="item-desc">Bedugul, Bali &middot; 2020 &middot; Moscato.</p></div><div class="wine-prices"><span class="wine-price">102</span><span class="wine-price">192</span><span class="wine-price">420</span></div></div></div>
+    <div class="wine-item reveal" data-name="Bottega Sparkling wine"><div class="wine-row"><div><div class="item-name">Bottega Sparkling</div><p class="item-desc">Veneto, Italy &middot; Prosecco.</p></div><div class="wine-prices"><span class="wine-price-empty">—</span><span class="wine-price-empty">—</span><span class="wine-price">720</span></div></div></div>
+  </div>
+
+  <div class="chef-note reveal">
+    <span class="label">A note from the chef</span>
+    Prices are shown in thousands of Indonesian Rupiah (× 1,000). Subject to 10% government tax and 7% service charge.
+    Choose your extras from any item — cheese, bacon, coconut bacon, salmon, shrimp <strong>+45k</strong>.
+    Extra house-made sauce or dip <strong>+20k</strong>. Gluten-free pasta <strong>+10k</strong>.
+  </div>
+</section>
+
+<div class="no-results" id="no-results">No items found for "<span id="no-results-term"></span>"</div>
+
+<footer class="footer">
+  <img class="footer-tree" src="tree-black.png" alt="" aria-hidden="true">
+  <div class="footer-tag">Soil &middot; Sunlight &middot; Rain</div>
+  <div class="footer-sub">menu.mundukbali.com</div>
+</footer>
+
+<!-- Back to top -->
+<button class="btt" id="btt" aria-label="Back to top">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<script>
+(function () {
+  const navLinks = document.querySelectorAll(".nav a");
+  const sections = Array.from(document.querySelectorAll(".section"));
+  const searchInput = document.getElementById("search");
+  const searchCount = document.getElementById("search-count");
+  const noResults = document.getElementById("no-results");
+  const noResultsTerm = document.getElementById("no-results-term");
+  const btt = document.getElementById("btt");
+
+  /* ── SCROLL REVEAL ── */
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); revealObs.unobserve(e.target); } });
+  }, { threshold: 0.07, rootMargin: "0px 0px -40px 0px" });
+  document.querySelectorAll(".reveal").forEach(el => revealObs.observe(el));
+
+  /* ── NAV ACTIVE ── */
+  function updateNav() {
+    if (searchInput.value.trim()) return;
+    const y = window.scrollY + 100;
+    let cur = sections[0];
+    for (const s of sections) { if (s.offsetTop <= y) cur = s; }
+    navLinks.forEach(a => {
+      const active = a.getAttribute("href") === "#" + cur.id;
+      a.classList.toggle("active", active);
+      if (active) a.scrollIntoView({ inline: "nearest", behavior: "smooth", block: "nearest" });
+    });
+  }
+  window.addEventListener("scroll", updateNav, { passive: true });
+  updateNav();
+
+  /* ── NAV CLICK ── */
+  navLinks.forEach(a => a.addEventListener("click", (e) => {
+    e.preventDefault();
+    const id = a.getAttribute("href").slice(1);
+    const target = document.getElementById(id);
+    if (!target) return;
+    window.scrollTo({ top: target.offsetTop - 120, behavior: "smooth" });
+  }));
+
+  /* ── SEARCH ── */
+  const allItems = document.querySelectorAll(".item[data-name], .wine-item[data-name]");
+
+  function doSearch(raw) {
+    const q = raw.trim().toLowerCase();
+    sections.forEach(s => {
+      s.classList.toggle("no-filter", !q);
+      s.classList.remove("visible");
+    });
+    noResults.classList.remove("show");
+
+    if (!q) {
+      sections.forEach(s => s.classList.add("no-filter"));
+      searchCount.textContent = "";
+      return;
+    }
+
+    let count = 0;
+    allItems.forEach(item => {
+      const name = (item.dataset.name || "").toLowerCase();
+      const desc = (item.querySelector(".item-desc")?.textContent || "").toLowerCase();
+      const match = name.includes(q) || desc.includes(q);
+      item.classList.toggle("hidden", !match);
+      if (match) { count++; item.closest(".section").classList.add("visible"); }
+    });
+
+    searchCount.textContent = count ? `${count} item${count !== 1 ? "s" : ""} found` : "";
+    if (!count) { noResults.classList.add("show"); noResultsTerm.textContent = raw.trim(); }
+  }
+
+  searchInput.addEventListener("input", () => doSearch(searchInput.value));
+  searchInput.addEventListener("search", () => doSearch(searchInput.value));
+
+  /* ── BACK TO TOP ── */
+  window.addEventListener("scroll", () => {
+    btt.classList.toggle("show", window.scrollY > 400);
+  }, { passive: true });
+  btt.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+})();
+</script>
+</body>
+</html>
