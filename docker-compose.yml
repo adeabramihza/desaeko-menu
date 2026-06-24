@@ -1,0 +1,19 @@
+services:
+  menu:
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - .:/usr/share/nginx/html:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.menu-munduk.rule=Host(`menu.mundukbali.com`)"
+      - "traefik.http.routers.menu-munduk.entrypoints=https"
+      - "traefik.http.routers.menu-munduk.tls=true"
+      - "traefik.http.routers.menu-munduk.tls.certresolver=letsencrypt"
+      - "traefik.http.services.menu-munduk.loadbalancer.server.port=80"
+    networks:
+      - coolify
+
+networks:
+  coolify:
+    external: true
